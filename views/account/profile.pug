@@ -77,15 +77,3 @@ block content
         button.btn.btn-danger(type='submit')
           i.fa.fa-trash
           | Delete my account
-
-  .page-header
-    h3 Linked Accounts
-    hr
-  .form-horizontal
-    .form-group.row.justify-content-md-center
-      .offset-sm-3.col-sm-7
-        if user.facebook
-          p: a.text-danger(href='/account/unlink/facebook') Unlink your Facebook account
-        else
-          p: a(href='/auth/facebook') Link your Facebook account
-
