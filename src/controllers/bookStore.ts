@@ -43,7 +43,7 @@ export const createBook = async (req: Request, res: Response) => {
 
         throw new Error("You already have book with this name");
     }).run(req);
-    await check("price", "Price must be a valid number").isNumeric().not().isEmpty().run(req);
+    await check("price", "Price must be a valid positive number").isFloat({min: 0}).not().isEmpty().run(req);
 
     const errors = validationResult(req);
 

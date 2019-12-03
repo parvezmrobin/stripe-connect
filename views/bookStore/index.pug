@@ -5,38 +5,51 @@ block content
     h3.text-center #{store ? store.name : 'Your Store'}
     hr
 
-  if (!store)
-    p.lead.text-center You haven't created your store yet. Let's create one.
-    form.form-horizontal(method='POST')
-      input(type='hidden', name='_csrf', value=_csrf)
-      .form-group.row.justify-content-md-center
-        label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Store Name
-        .col-sm-8.col-lg-4
-          input.form-control(type='text', name='name', id='name', autofocus=true)
-        .col-sm-2
-          button.btn.btn-primary(type='submit')
-            i.fa.fa-pencil
-            | Create
-  else
-    if (!store.books || !store.books.length)
-      p.offset-sm-2.col-sm-10.lead.text-center Your store lacks some books. Let's create some.
-    form.form-horizontal(method='POST', action='/book')
+  .container
+    .row
+      div(class= (store.books && store.books.length) ? 'col-md-4': 'col-md-0')
+        p.lead.text-center Your Books
+        ul.list-group.list-group-flush
+          each val in store.books
+            li.list-group-item
+              | #{val.name} [ #{val.price}
+              i.fa.fa-dollar
+              | ]
+      .col
+        if (!store)
+          p.lead.text-center You haven't created your store yet. Let's create one.
+          form.form-horizontal(method='POST')
+            input(type='hidden', name='_csrf', value=_csrf)
+            .form-group.row.justify-content-md-center
+              label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Store Name
+              .col-sm-8.col-lg-4
+                input.form-control(type='text', name='name', id='name', autofocus=true)
+              .col-sm-2
+                button.btn.btn-primary(type='submit')
+                  i.fa.fa-pencil
+                  | Create
+        else
+          if (!store.books || !store.books.length)
+            p.offset-sm-2.col-sm-10.lead.text-center Your store lacks some books. Let's create some.
+          else
+            p.offset-sm-2.col-sm-10.lead.text-center Let's add some more books.
+          form.form-horizontal(method='POST', action='/book')
 
-      input(type='hidden', name='_csrf', value=_csrf)
+            input(type='hidden', name='_csrf', value=_csrf)
 
-      .form-group.row.justify-content-md-center
-        label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Book Name
-        .col-sm-8.col-lg-4
-          input.form-control(type='text', name='name', id='name', autofocus=true)
+            .form-group.row.justify-content-md-center
+              label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Book Name
+              .col-sm-8.col-lg-4
+                input.form-control(type='text', name='name', id='name', autofocus=true)
 
-      .form-group.row.justify-content-md-center
-        label.col-sm-2.col-form-label.text-right.font-weight-bold(for='price') Price
-        .col-sm-8.col-lg-4
-          input.form-control(type='number', name='price', id='price')
+            .form-group.row.justify-content-md-center
+              label.col-sm-2.col-form-label.text-right.font-weight-bold(for='price') Price
+              .col-sm-8.col-lg-4
+                input.form-control(type='number', name='price', id='price')
 
-      .form-group.row.justify-content-md-center
-        .offset-sm-2.col-sm-10.text-center
-          button.btn.btn-primary(type='submit')
-            i.fa.fa-pencil
-            | Create
+            .form-group.row.justify-content-md-center
+              .offset-sm-2.col-sm-10.text-center
+                button.btn.btn-primary(type='submit')
+                  i.fa.fa-pencil
+                  | Create
 
