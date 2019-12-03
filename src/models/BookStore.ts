@@ -1,7 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, {Query} from "mongoose";
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 type ObjectId = mongoose.Types.ObjectId;
+type addBookFunction = (name: string, price: number) => Query<BookStoreDocument>;
 
 export type BookStoreDocument = mongoose.Document & {
     user: ObjectId;
@@ -10,6 +11,7 @@ export type BookStoreDocument = mongoose.Document & {
        name: string;
        price: number;
     }>;
+    addBook: addBookFunction;
 };
 
 const bookStoreSchema = new mongoose.Schema({
@@ -18,7 +20,7 @@ const bookStoreSchema = new mongoose.Schema({
     books: [{name: String, price: Number}],
 }, {timestamps: true});
 
-bookStoreSchema.methods.addBook = function (name: string, price: number) {
+bookStoreSchema.methods.addBook = function (name: string, price: number): Query<BookStoreDocument> {
     return this.updateOne({$push: {books: {name, price}}});
 };
 

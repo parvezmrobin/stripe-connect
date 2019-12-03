@@ -104,6 +104,7 @@ app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userControl
 
 app.get("/store", passportConfig.isAuthenticated, bookStoreController.showBookStore);
 app.post("/store", passportConfig.isAuthenticated, bookStoreController.createBookStore);
+app.post("/book", passportConfig.isAuthenticated, bookStoreController.createBook);
 
 /**
  * OAuth authentication routes. (Sign in)
