@@ -54,9 +54,7 @@
         "node-sass": "^4.12.0",
         "shelljs": "^0.8.3",
         "ts-node": "^8.4.1",
-        "typescript": "^3.6.3"
-    },
-    "devDependencies": {
+        "typescript": "^3.6.3",
         "@types/async": "^3.0.2",
         "@types/bcrypt-nodejs": "^0.0.30",
         "@types/bluebird": "^3.5.27",
