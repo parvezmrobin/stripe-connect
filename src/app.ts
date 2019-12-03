@@ -17,6 +17,7 @@ const MongoStore = mongo(session);
 import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as bookStoreController from "./controllers/bookStore";
+import * as surfController from "./controllers/surf";
 import * as contactController from "./controllers/contact";
 
 
@@ -105,6 +106,8 @@ app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userControl
 app.get("/store", passportConfig.isAuthenticated, bookStoreController.showBookStore);
 app.post("/store", passportConfig.isAuthenticated, bookStoreController.createBookStore);
 app.post("/book", passportConfig.isAuthenticated, bookStoreController.createBook);
+
+app.get("/surf", surfController.showBooks);
 
 /**
  * OAuth authentication routes. (Sign in)

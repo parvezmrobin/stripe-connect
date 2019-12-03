@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .page-header
+    h3.text-center #{store ? store.name : 'Surf Books'}
+    hr
+
+  .container
+    .row
+      each book in books
+        .col-md-3
+          .card
+            .card-body
+              h5.card-title #{book.book.name}
+              h6.card-subtitle.mb-2.text-muted #{book.book.price}
+                i.fa.fa-dollar
+              p.card-text
+                span.font-weight-bold Author
+                | : #{book.author}
+              a.card-link(href='#') Buy Book
+
