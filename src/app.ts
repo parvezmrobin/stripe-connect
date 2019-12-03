@@ -16,7 +16,7 @@ const MongoStore = mongo(session);
 // Controllers (route handlers)
 import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
-import * as apiController from "./controllers/api";
+import * as bookStoreController from "./controllers/bookStore";
 import * as contactController from "./controllers/contact";
 
 
@@ -102,11 +102,8 @@ app.post("/account/password", passportConfig.isAuthenticated, userController.pos
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
 
-/**
- * API examples routes.
- */
-app.get("/api", apiController.getApi);
-app.get("/api/facebook", passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
+app.get("/store", passportConfig.isAuthenticated, bookStoreController.showBookStore);
+app.post("/store", passportConfig.isAuthenticated, bookStoreController.createBookStore);
 
 /**
  * OAuth authentication routes. (Sign in)

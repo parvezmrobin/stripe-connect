@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+  .page-header
+    h3.text-center #{store ? store.name : 'Your Store'}
+    hr
+
+  if (!store)
+    p.lead.text-center You haven't created your store yet. Let's create one.
+  form.form-horizontal(method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group.row.justify-content-md-center
+      label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Store Name
+      .col-sm-8.col-lg-4
+        input.form-control(type='text', name='name', id='name', autofocus=true)
+      .col-sm-2
+        button.btn.btn-primary(type='submit')
+          i.fa.fa-pencil
+          | Create
