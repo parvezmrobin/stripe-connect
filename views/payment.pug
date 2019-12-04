@@ -1,0 +1,35 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col
+                form#payment-form(action='/charge' method='post')
+                    .form-row
+                        label(for='card-element')
+                            | Credit or debit card
+                        #card-element
+                        #card-errors(role='alert')
+                    button Submit Payment
+
+block scripts
+    script(src='https://js.stripe.com/v3/')
+
+    script.
+      const stripe = Stripe('pk_test_kwV21fUbKlo253t8eE9Ueq3u00wpvgE5Jc');
+      const elements = stripe.elements();
+      $(document).ready(function () {
+
+        const style = {
+          base: {
+            // Add your base input styles here. For example:
+            fontSize: '16px',
+            color: "#32325d",
+          },
+        };
+        // Create an instance of the card Element.
+        const card = elements.create('card', {style});
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element')
+      });

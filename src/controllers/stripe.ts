@@ -13,7 +13,7 @@ export const validateStripeCall = async (req: Request, res: Response) => {
                 code: req.query.code,
             });
         logger.debug(stripeResponse);
-        
+
         const user = req.user as UserDocument;
         await User.updateOne({_id: user._id}, {$set: {stripe: stripeResponse}});
     } catch (e) {
@@ -22,4 +22,8 @@ export const validateStripeCall = async (req: Request, res: Response) => {
         });
     }
     return res.redirect("/account");
+};
+
+export const getPaymentForm = (req: Request, res: Response) => {
+    res.render("payment");
 };
