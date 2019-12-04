@@ -10,8 +10,9 @@ export const validateStripeCall = async (req: Request, res: Response) => {
         const stripeResponse: StripePayload = await stripeClient.oauth
             .token({
                 grant_type: "authorization_code",
-                code: "ac_GIaJc9E6xfTZ4PU1XQT1XYS1gan87lSS",
+                code: req.query.code,
             });
+        logger.debug(stripeResponse);
         if (stripeResponse.stripe_publishable_key !== "pk_test_asIQM8Tg70uCLDiL7dqoAXQA00XaUKZEqC") {
             return res.json({success: false});
         }
@@ -19,7 +20,9 @@ export const validateStripeCall = async (req: Request, res: Response) => {
         const user = req.user as UserDocument;
         await User.updateOne({_id: user._id}, {$set: {stripe: stripeResponse}});
     } catch (e) {
-        logger.error(e.statusCode, e.type, e.message);
+        logger.error({
+            statusCode: e.statusCode, type: e.type, message: e.message,
+        });
     }
     return res.redirect("/account");
 };
