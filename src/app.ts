@@ -19,6 +19,7 @@ import * as userController from "./controllers/user";
 import * as bookStoreController from "./controllers/bookStore";
 import * as surfController from "./controllers/surf";
 import * as contactController from "./controllers/contact";
+import * as stripeConnectController from "./controllers/stripe-connect";
 
 
 // API keys and Passport configuration
@@ -108,6 +109,8 @@ app.post("/store", passportConfig.isAuthenticated, bookStoreController.createBoo
 app.post("/book", passportConfig.isAuthenticated, bookStoreController.createBook);
 
 app.get("/surf", surfController.showBooks);
+
+app.get("/stripe/callback", stripeConnectController.validateStripeCall);
 
 /**
  * OAuth authentication routes. (Sign in)

@@ -46,6 +46,14 @@ block content
           | Update Profile
 
   .page-header
+    h3 Connect To Stripe
+    hr
+    .row.justify-content-md-center
+      .offset-sm-3.col-sm-7
+        a(href='https://connect.stripe.com/oauth/authorize?response_type=code&client_id=' + 'ca_GIZTnf0NlzKOFxDokpSgVkpVo39fizOb' + '&scope=read_write' target='_blank')
+          img(src='/images/stripe-connect.png')
+
+  .page-header
     h3 Change Password
     hr
 
