@@ -13,10 +13,7 @@ export const validateStripeCall = async (req: Request, res: Response) => {
                 code: req.query.code,
             });
         logger.debug(stripeResponse);
-        if (stripeResponse.stripe_publishable_key !== "pk_test_asIQM8Tg70uCLDiL7dqoAXQA00XaUKZEqC") {
-            return res.json({success: false});
-        }
-
+        
         const user = req.user as UserDocument;
         await User.updateOne({_id: user._id}, {$set: {stripe: stripeResponse}});
     } catch (e) {

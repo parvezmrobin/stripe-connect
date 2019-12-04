@@ -41,8 +41,9 @@ export interface AuthToken {
     kind: string;
 }
 
+/* eslint-disable @typescript-eslint/camelcase */
 const userSchema = new mongoose.Schema({
-    email: { type: String, unique: true },
+    email: {type: String, unique: true},
     password: String,
     passwordResetToken: String,
     passwordResetExpires: Date,
@@ -58,19 +59,35 @@ const userSchema = new mongoose.Schema({
         location: String,
         website: String,
         picture: String
-    }
-}, { timestamps: true });
+    },
+
+    stripe: {
+        access_token: String,
+        livemode: Boolean,
+        refresh_token: String,
+        token_type: String,
+        stripe_publishable_key: String,
+        stripe_user_id: String,
+        scope: String,
+    },
+}, {timestamps: true});
 
 /**
  * Password hash middleware.
  */
 userSchema.pre("save", function save(next) {
     const user = this as UserDocument;
-    if (!user.isModified("password")) { return next(); }
+    if (!user.isModified("password")) {
+        return next();
+    }
     bcrypt.genSalt(10, (err, salt) => {
-        if (err) { return next(err); }
+        if (err) {
+            return next(err);
+        }
         bcrypt.hash(user.password, salt, undefined, (err: mongoose.Error, hash) => {
-            if (err) { return next(err); }
+            if (err) {
+                return next(err);
+            }
             user.password = hash;
             next();
         });
