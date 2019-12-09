@@ -1,1 +1,1 @@
-web: yarn build && yarn serve
+web: yarn prisma && yarn build && yarn serve
