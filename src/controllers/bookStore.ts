@@ -36,8 +36,8 @@ export const createBookStore = async (req: Request, res: Response) => {
 export const createBook = async (req: Request, res: Response) => {
     await check("name", "Name cannot be blank").not().isEmpty().run(req);
     await check("name").custom(async (name, {req}) => {
-        const book = await BookStore.findOne({user: req.user._id, "books.name": name});
-        if (!book) {
+        const bookStore = await BookStore.findOne({user: req.user._id});
+        if (!bookStore) {
             return true;
         }
 
@@ -52,7 +52,7 @@ export const createBook = async (req: Request, res: Response) => {
     } else {
         const user = req.user as UserDocument;
         const bookStore = await BookStore.findOne({user: user._id});
-        await bookStore.addBook(req.body.name, req.body.price);
+        await BookStore.addBook(bookStore.id, req.body.name, req.body.price);
         req.flash("success", [{msg: "Successfully created your store"}]);
     }
     return res.redirect("/store");
