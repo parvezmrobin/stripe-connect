@@ -1,56 +1,27 @@
-import {
-    Book as IBook,
-    BookStore as IBookStore,
-    BookStoreCreateInput,
-    BookStoreWhereInput,
-    ID_Input as IdInput,
-    prisma as Prisma
-} from "../generated/prisma-client";
-import {User} from "./User";
+import mongoose, {Query} from "mongoose";
 
-interface BookStoreWithBooks extends IBookStore {
-    books: IBook[];
-}
+const ObjectId = mongoose.Schema.Types.ObjectId;
+type ObjectId = mongoose.Types.ObjectId;
+type addBookFunction = (name: string, price: number) => Query<BookStoreDocument>;
 
-interface BookWithAuthorStore extends IBook{
-    book: IBook;
-    author: string;
-    storeName: string;
-}
-
-export const BookStore = {
-    findOne: async (query: BookStoreWhereInput) => {
-        const bookStores = await Prisma.bookStores({
-            where: query,
-            first: 1
-        });
-        const bookStore = ((bookStores || [])[0]) as BookStoreWithBooks;
-        bookStore.books = await Prisma.books({where: {bookStore: bookStore.id}});
-        return bookStore;
-    },
-    create: (args: BookStoreCreateInput) => Prisma.createBookStore(args),
-    addBook: (bookStore: IdInput, name: string, price: number) => Prisma.createBook({bookStore, name, price}),
-    allBook: async () => {
-        const books = await Prisma.books();
-        const caches = {};
-        const booksWithAuthorStore = books.map(async book => {
-            const bookStoreId = book.bookStore;
-            if (bookStoreId in caches) {
-                const cache = caches[bookStoreId];
-                return {
-                    book,
-                    author: cache.author,
-                    storeName: cache.storeName,
-                } as BookWithAuthorStore;
-            }
-            const bookStore = await BookStore.findOne({id: bookStoreId});
-            const author = await User.findById(bookStore.user);
-            const bookWithAuthorStore = {book} as BookWithAuthorStore;
-            caches[bookStoreId] = {};
-            caches[bookStoreId].author = bookWithAuthorStore.author = author.profile.name;
-            caches[bookStoreId].storeName = bookWithAuthorStore.storeName = bookStore.name;
-        });
-        return booksWithAuthorStore;
-
-    },
+export type BookStoreDocument = mongoose.Document & {
+    user: ObjectId;
+    name: string;
+    books: Array<{
+       name: string;
+       price: number;
+    }>;
+    addBook: addBookFunction;
 };
+
+const bookStoreSchema = new mongoose.Schema({
+    user: ObjectId,
+    name: String,
+    books: [{name: String, price: Number}],
+}, {timestamps: true});
+
+bookStoreSchema.methods.addBook = function (name: string, price: number): Query<BookStoreDocument> {
+    return this.updateOne({$push: {books: {name, price}}});
+};
+
+export const BookStore = mongoose.model<BookStoreDocument>("BookStore", bookStoreSchema);

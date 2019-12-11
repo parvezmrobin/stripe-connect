@@ -2,27 +2,14 @@ import {Request, Response} from "express";
 import {check, validationResult} from "express-validator";
 import {BookStore} from "../models/BookStore";
 import {UserDocument} from "../models/User";
-import logger from "../util/logger";
 
 export const showBookStore = async (req: Request, res: Response) => {
-    try {
-        const user = req.user as UserDocument;
-        const store = await BookStore.findOne({user: user._id});
-        res.render("bookStore", {
-            title: "Your Store",
-            store,
-        });
-    } catch (e) {
-        for (const key in e.result.errors) {
-            if (e.result.errors.hasOwnProperty(key)) {
-                logger.error(key, ":", e.result.errors[key]);
-            }
-        }
-        res.render("bookStore", {
-            title: "Your Store",
-            store: {books: []},
-        });
-    }
+    const user = req.user as UserDocument;
+    const store = await BookStore.findOne({user: user._id});
+    res.render("bookStore", {
+        title: "Your Store",
+        store,
+    });
 };
 
 export const createBookStore = async (req: Request, res: Response) => {
@@ -49,8 +36,8 @@ export const createBookStore = async (req: Request, res: Response) => {
 export const createBook = async (req: Request, res: Response) => {
     await check("name", "Name cannot be blank").not().isEmpty().run(req);
     await check("name").custom(async (name, {req}) => {
-        const bookStore = await BookStore.findOne({user: req.user._id});
-        if (!bookStore) {
+        const book = await BookStore.findOne({user: req.user._id, "books.name": name});
+        if (!book) {
             return true;
         }
 
@@ -65,7 +52,7 @@ export const createBook = async (req: Request, res: Response) => {
     } else {
         const user = req.user as UserDocument;
         const bookStore = await BookStore.findOne({user: user._id});
-        await BookStore.addBook(bookStore.id, req.body.name, req.body.price);
+        await bookStore.addBook(req.body.name, req.body.price);
         req.flash("success", [{msg: "Successfully created your store"}]);
     }
     return res.redirect("/store");
