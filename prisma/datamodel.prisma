@@ -11,7 +11,7 @@ type User {
 }
 
 type AuthToken {
-    accessToekn: String!
+    accessToken: String!
     kind: String!
 }
 

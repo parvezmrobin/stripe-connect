@@ -2,14 +2,27 @@ import {Request, Response} from "express";
 import {check, validationResult} from "express-validator";
 import {BookStore} from "../models/BookStore";
 import {UserDocument} from "../models/User";
+import logger from "../util/logger";
 
 export const showBookStore = async (req: Request, res: Response) => {
-    const user = req.user as UserDocument;
-    const store = await BookStore.findOne({user: user._id});
-    res.render("bookStore", {
-        title: "Your Store",
-        store,
-    });
+    try {
+        const user = req.user as UserDocument;
+        const store = await BookStore.findOne({user: user._id});
+        res.render("bookStore", {
+            title: "Your Store",
+            store,
+        });
+    } catch (e) {
+        for (const key in e.result.errors) {
+            if (e.result.errors.hasOwnProperty(key)) {
+                logger.error(key, ":", e.result.errors[key]);
+            }
+        }
+        res.render("bookStore", {
+            title: "Your Store",
+            store: {books: []},
+        });
+    }
 };
 
 export const createBookStore = async (req: Request, res: Response) => {
