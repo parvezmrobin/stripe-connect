@@ -27,3 +27,8 @@ export const validateStripeCall = async (req: Request, res: Response) => {
 export const getPaymentForm = (req: Request, res: Response) => {
     res.render("payment");
 };
+
+export const charge = (req: Request, res: Response) => {
+  logger.debug(req.body);
+  res.json(req.body);
+};

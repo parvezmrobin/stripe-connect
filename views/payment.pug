@@ -17,19 +17,41 @@ block scripts
 
     script.
       const stripe = Stripe('pk_test_kwV21fUbKlo253t8eE9Ueq3u00wpvgE5Jc');
-      const elements = stripe.elements();
-      $(document).ready(function () {
-
-        const style = {
-          base: {
-            // Add your base input styles here. For example:
-            fontSize: '16px',
-            color: "#32325d",
+      var elements = stripe.elements({
+        fonts: [
+          {
+            cssSrc: 'https://fonts.googleapis.com/css?family=Roboto',
           },
-        };
-        // Create an instance of the card Element.
-        const card = elements.create('card', {style});
-
-        // Add an instance of the card Element into the `card-element` <div>.
-        card.mount('#card-element')
+        ],
       });
+
+      var card = elements.create('card', {
+        iconStyle: 'solid',
+        style: {
+          base: {
+            iconColor: '#c4f0ff',
+            color: '#fff',
+            fontWeight: 500,
+            fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
+            fontSize: '16px',
+            fontSmoothing: 'antialiased',
+
+            ':-webkit-autofill': {
+              color: '#fce883',
+            },
+            '::placeholder': {
+              color: '#87BBFD',
+            },
+          },
+          invalid: {
+            iconColor: '#FFC7EE',
+            color: '#FFC7EE',
+          },
+        },
+      });
+      card.mount('#card-element');
+
+      registerElements([card], 'col');
+
+    // Add an instance of the card Element into the `card-element` <div>.
+    card.mount('#card-element')

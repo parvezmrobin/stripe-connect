@@ -17,5 +17,5 @@ block content
               p.card-text
                 span.font-weight-bold Author
                 | : #{book.author}
-              a.card-link(href='/payment/' + book._id) Buy Book
+              a.card-link(href='/stripe-client?id=' + book._id) Buy Book
 
