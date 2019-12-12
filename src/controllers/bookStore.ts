@@ -5,10 +5,19 @@ import {UserDocument} from "../models/User";
 
 export const showBookStore = async (req: Request, res: Response) => {
     const user = req.user as UserDocument;
-    const store = await BookStore.findOne({user: user._id});
+    const store = await BookStore.findOne({user: user._id})
+        .select("name books sales");
+    const totalSales = store && store.sales.length;
+    const totalIncome = store && store.sales.reduce((sum, sale) => {
+        return sum + sale.amount - sale.application_fee_amount;
+    }, 0) / 100;
     res.render("bookStore", {
         title: "Your Store",
-        store,
+        hasStore: !!store,
+        name: store ? store.name : "Your Store",
+        books: store? store.books : [],
+        totalSales,
+        totalIncome,
     });
 };
 

@@ -1,22 +1,25 @@
-extends ../layout
+extends layout
 
 block content
   .page-header
-    h3.text-center #{store ? store.name : 'Your Store'}
+    h3.text-center #{name}
     hr
+    if (totalSales)
+      p.lead.text-center Sold #{totalSales} at #{totalIncome}
+        i.fa.fa-dollar
 
   .container
     .row
-      div(class= (store.books && store.books.length) ? 'col-md-4': 'col-md-0')
+      div(class= (books.length) ? 'col-md-4': 'col-md-0')
         p.lead.text-center Your Books
         ul.list-group.list-group-flush
-          each val in store.books
+          each val in books
             li.list-group-item
               | #{val.name} [ #{val.price}
               i.fa.fa-dollar
               | ]
       .col
-        if (!store)
+        if (!hasStore)
           p.lead.text-center You haven't created your store yet. Let's create one.
           form.form-horizontal(method='POST')
             input(type='hidden', name='_csrf', value=_csrf)
@@ -29,7 +32,7 @@ block content
                   i.fa.fa-pencil
                   | Create
         else
-          if (!store.books || !store.books.length)
+          if (!books.length)
             p.offset-sm-2.col-sm-10.lead.text-center Your store lacks some books. Let's create some.
           else
             p.offset-sm-2.col-sm-10.lead.text-center Let's add some more books.
