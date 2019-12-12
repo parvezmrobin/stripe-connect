@@ -48,10 +48,14 @@ block content
   .page-header
     h3 Connect To Stripe
     hr
-    if (user.stripe)
+    if (Object.keys(user.stripe.toObject()).length)
       .row.justify-content-md-center
         .offset-sm-3.col-sm-7
           span.lead.font-weight-bold Connected To Stripe
+          form.form-inline(method='POST', action='/stripe/disconnect')
+            button.btn.btn-warning.mt-3(type='submit')
+              i.fa.fa-remove
+              | Disconnect stripe
     else
       .row.justify-content-md-center
         .offset-sm-3.col-sm-7

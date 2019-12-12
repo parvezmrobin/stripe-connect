@@ -62,7 +62,7 @@ export const createBook = async (req: Request, res: Response) => {
         const user = req.user as UserDocument;
         const bookStore = await BookStore.findOne({user: user._id});
         await bookStore.addBook(req.body.name, req.body.price);
-        req.flash("success", [{msg: "Successfully created your store"}]);
+        req.flash("success", [{msg: "Successfully created your book"}]);
     }
     return res.redirect("/store");
 };

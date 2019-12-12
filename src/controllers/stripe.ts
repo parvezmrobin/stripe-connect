@@ -61,3 +61,9 @@ export const charge = async (req: Request, res: Response) => {
         res.redirect("/surf");
     }
 };
+
+export const disconnect = async (req: Request, res: Response) => {
+    const user = req.user as UserDocument;
+    await User.updateOne({_id: user._id}, {$set: {stripe: {}}});
+    res.redirect("/account");
+};

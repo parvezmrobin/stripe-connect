@@ -111,6 +111,7 @@ app.post("/book", passportConfig.isAuthenticated, bookStoreController.createBook
 app.get("/surf", surfController.showBooks);
 
 app.get("/stripe/callback", stripeConnectController.validateStripeCall);
+app.post("/stripe/disconnect", passportConfig.isAuthenticated, stripeConnectController.disconnect);
 app.get("/payment/:bookId", stripeConnectController.getPaymentForm);
 app.post("/charge", stripeConnectController.charge);
 
