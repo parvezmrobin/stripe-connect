@@ -5,12 +5,12 @@ block content
     h3.text-center #{name}
     hr
     if (totalSales)
-      p.lead.text-center Sold #{totalSales} at #{totalIncome}
+      p.lead.text-center Sold #{totalSales} books and made #{totalIncome}
         i.fa.fa-dollar
 
   .container
     .row
-      div(class= (books.length) ? 'col-md-4': 'col-md-0')
+      div(class= (books.length) ? 'col-md-3': 'col-md-0')
         p.lead.text-center Your Books
         ul.list-group.list-group-flush
           each val in books
@@ -25,7 +25,7 @@ block content
             input(type='hidden', name='_csrf', value=_csrf)
             .form-group.row.justify-content-md-center
               label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Store Name
-              .col-sm-8.col-lg-4
+              .col-sm-8.col-lg-6
                 input.form-control(type='text', name='name', id='name', autofocus=true)
               .col-sm-2
                 button.btn.btn-primary(type='submit')
@@ -35,24 +35,34 @@ block content
           if (!books.length)
             p.offset-sm-2.col-sm-10.lead.text-center Your store lacks some books. Let's create some.
           else
-            p.offset-sm-2.col-sm-10.lead.text-center Let's add some more books.
+            p.col-sm-12.lead.text-center Let's add some more books.
           form.form-horizontal(method='POST', action='/book')
 
             input(type='hidden', name='_csrf', value=_csrf)
 
             .form-group.row.justify-content-md-center
-              label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Book Name
-              .col-sm-8.col-lg-4
+              label.col-sm-3.col-form-label.text-right.font-weight-bold(for='name') Book Name
+              .col-sm-8.col-lg-6
                 input.form-control(type='text', name='name', id='name', autofocus=true)
 
             .form-group.row.justify-content-md-center
-              label.col-sm-2.col-form-label.text-right.font-weight-bold(for='price') Price
-              .col-sm-8.col-lg-4
+              label.col-sm-3.col-form-label.text-right.font-weight-bold(for='price') Price
+              .col-sm-8.col-lg-6
                 input.form-control(type='number', name='price', id='price')
 
             .form-group.row.justify-content-md-center
-              .offset-sm-2.col-sm-10.text-center
+              .offset-sm-3.col-sm-9.text-center
                 button.btn.btn-primary(type='submit')
                   i.fa.fa-pencil
                   | Create
+
+      div(class= (sales.length) ? 'col-md-3': 'col-md-0')
+        p.lead.text-center Your Sales
+          ul.list-group.list-group-flush
+            each sale in sales
+              li.list-group-item
+                span.font-italic #{sale.book.name}
+                |  at #{sale.book.price}
+                i.fa.fa-dollar
+                a(href='/sale/delete/' + sale.id) Refund
 

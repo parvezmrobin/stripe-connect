@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {User, UserDocument} from "../models/User";
 import Stripe from "stripe";
 import logger from "../util/logger";
-import {BookDocument, BookStore} from "../models/BookStore";
+import {BookDocument, BookStore, SaleDocument} from "../models/BookStore";
 
 const stripeClient = new Stripe("sk_test_J4Z45kIzrgJ1GFy5qR0ovQ7L00B8lfIVr4");
 export const validateStripeCall = async (req: Request, res: Response) => {
@@ -30,7 +30,6 @@ export const getPaymentForm = (req: Request, res: Response) => {
 };
 
 export const charge = async (req: Request, res: Response) => {
-    logger.debug(req.body);
     let book: BookDocument;
     try {
         const bookId = req.body.id;
@@ -50,7 +49,7 @@ export const charge = async (req: Request, res: Response) => {
         }, {
             stripe_account: user.stripe.stripe_user_id,
         });
-        const sale = {...charge, book: book._id};
+        const sale: SaleDocument = {...charge, book: book._id};
         await BookStore.updateOne({_id: bookStore._id}, {$push: {sales: sale}});
         req.flash("success", [{msg: "Successfully brought book " + book.name}]);
         logger.debug(charge);
@@ -60,6 +59,27 @@ export const charge = async (req: Request, res: Response) => {
         req.flash("errors", [{msg: "Failed to purchase book " + book.name}]);
         res.redirect("/surf");
     }
+};
+
+export const refund = async (req: Request, res: Response) => {
+    try {
+        const user = req.user as UserDocument;
+        const bookStore = await BookStore.findOne({user: user._id}).select("books sales").exec();
+        const saleId = req.params.id;
+        const saleIndex = bookStore.sales.findIndex(sale => sale.id === saleId);
+        const saleToBeRefunded = bookStore.sales[saleIndex];
+        const refund = await stripeClient.refunds.create({
+            charge: saleToBeRefunded.id,
+            refund_application_fee: true,
+        }, {
+            stripe_account: user.stripe.stripe_user_id,
+        });
+        logger.info("Refunded", refund);
+        await bookStore.updateOne({$set: {[`sales.${saleIndex}.isRefunded`]: true}});
+    } catch (e) {
+        logger.error("Error: ", e);
+    }
+    res.redirect("/store");
 };
 
 export const disconnect = async (req: Request, res: Response) => {

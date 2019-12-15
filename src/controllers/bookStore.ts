@@ -1,21 +1,32 @@
 import {Request, Response} from "express";
 import {check, validationResult} from "express-validator";
-import {BookStore} from "../models/BookStore";
+import {BookStore, BookStoreDocument} from "../models/BookStore";
 import {UserDocument} from "../models/User";
 
 export const showBookStore = async (req: Request, res: Response) => {
     const user = req.user as UserDocument;
-    const store = await BookStore.findOne({user: user._id})
+    let store = await BookStore.findOne({user: user._id})
         .select("name books sales");
-    const totalSales = store && store.sales.length;
-    const totalIncome = store && store.sales.reduce((sum, sale) => {
+    const hasStore = !!store;
+    store = store || {} as BookStoreDocument;
+    store.sales = store.sales || [];
+    store.sales = store.sales.filter(sale => !sale.isRefunded);
+    const totalSales = store.sales.length;
+    const totalIncomeInCents = store.sales.reduce((sum, sale) => {
         return sum + sale.amount - sale.application_fee_amount;
-    }, 0) / 100;
+    }, 0);
+    const totalIncome = totalIncomeInCents / 100;
+
+    for (const sale of store.sales) {
+        // @ts-ignore
+        sale.book = store.books.find(book => book._id.toString() === sale.book.toString());
+    }
     res.render("bookStore", {
         title: "Your Store",
-        hasStore: !!store,
-        name: store ? store.name : "Your Store",
-        books: store? store.books : [],
+        hasStore: hasStore,
+        name: store.name || "Your Store",
+        books: store.books || [],
+        sales: store.sales,
         totalSales,
         totalIncome,
     });

@@ -114,6 +114,7 @@ app.get("/stripe/callback", stripeConnectController.validateStripeCall);
 app.post("/stripe/disconnect", passportConfig.isAuthenticated, stripeConnectController.disconnect);
 app.get("/payment/:bookId", stripeConnectController.getPaymentForm);
 app.post("/charge", stripeConnectController.charge);
+app.get("/sale/delete/:id", passportConfig.isAuthenticated, stripeConnectController.refund);
 
 /**
  * OAuth authentication routes. (Sign in)

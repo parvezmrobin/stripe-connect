@@ -15,6 +15,7 @@
         "ignoreParameters": true
       }
     ],
+    "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/no-unused-vars": "warn"
   }
 }

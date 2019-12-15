@@ -9,12 +9,15 @@ export type BookDocument = mongoose.Document & {
     name: string;
     price: number;
 };
-type ChargeDocument = mongoose.Document & charges.ICharge;
+export type SaleDocument = charges.ICharge & {
+    book: ObjectId;
+    isRefunded?: boolean;
+};
 export type BookStoreDocument = mongoose.Document & {
     user: ObjectId;
     name: string;
     books: Array<BookDocument>;
-    sales: Array<ChargeDocument>;
+    sales: Array<SaleDocument>;
     addBook: addBookFunction;
 };
 
