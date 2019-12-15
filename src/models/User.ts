@@ -1,16 +1,8 @@
 import bcrypt from "bcrypt-nodejs";
 import crypto from "crypto";
 import mongoose from "mongoose";
-
-export type StripePayload = {
-    access_token: string;
-    livemode: boolean;
-    refresh_token: string;
-    token_type: string;
-    stripe_publishable_key: string;
-    stripe_user_id: string;
-    scope: string;
-}
+import Stripe from "stripe";
+import IOAuthToken = Stripe.oauth.IOAuthToken;
 
 export type UserDocument = mongoose.Document & {
     email: string;
@@ -31,7 +23,7 @@ export type UserDocument = mongoose.Document & {
 
     comparePassword: comparePasswordFunction;
     gravatar: (size: number) => string;
-    stripe: StripePayload | null;
+    stripe: IOAuthToken | null;
 };
 
 type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
